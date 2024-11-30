@@ -1,6 +1,9 @@
 package eumsun.backend.controller.oauthController;
 
 import eumsun.backend.domain.SsoType;
+import eumsun.backend.dto.api.API;
+import eumsun.backend.dto.api.APIMessage;
+import eumsun.backend.dto.api.APIServerMessage;
 import eumsun.backend.dto.toService.DecodeOpenId;
 import eumsun.backend.dto.request.Oauth2JoinDto;
 import eumsun.backend.dto.response.TokenDto;
@@ -28,17 +31,20 @@ public class AppleController {
     private String appleAud;
 
     @PostMapping("/login")
-    public TokenDto appleLogin(@RequestBody String appleJson) {
+    public API<TokenDto> appleLogin(@RequestBody String appleJson) {
         Claims claims = decodeToken(appleJson);
+        TokenDto token = oidcService.oidcLogin(claims);
 
-        return oidcService.oidcLogin(claims);
+        return new API<>(token, APIServerMessage.요청_성공);
     }
 
     @PostMapping("/signup")
-    public String appleJoin(@RequestBody Oauth2JoinDto dto) {
+    public API<String> appleJoin(@RequestBody Oauth2JoinDto dto) {
         Claims claims = decodeToken(dto.getToken());
+        JoinUserOIDCDto oidcDto = new JoinUserOIDCDto(claims, dto.getUserType(), SsoType.APPLE);
+        APIMessage apiMessage = oidcService.oidcJoin(oidcDto);
 
-        return oidcService.oidcJoin(new JoinUserOIDCDto(claims, dto.getUserType(), SsoType.APPLE));
+        return new API<>(apiMessage);
     }
 
     private Claims decodeToken(String token) {

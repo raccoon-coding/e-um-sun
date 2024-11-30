@@ -1,6 +1,9 @@
 package eumsun.backend.controller.oauthController;
 
 import eumsun.backend.domain.SsoType;
+import eumsun.backend.dto.api.API;
+import eumsun.backend.dto.api.APIMessage;
+import eumsun.backend.dto.api.APIServerMessage;
 import eumsun.backend.dto.toService.DecodeOpenId;
 import eumsun.backend.dto.request.Oauth2JoinDto;
 import eumsun.backend.dto.response.TokenDto;
@@ -28,17 +31,20 @@ public class GoogleController {
     private String googleAud;
 
     @PostMapping("/login")
-    public TokenDto googleLogin(@RequestBody String googleJson) {
+    public API<TokenDto> googleLogin(@RequestBody String googleJson) {
         Claims claims = decodeToken(googleJson);
+        TokenDto token = oidcService.oidcLogin(claims);
 
-        return oidcService.oidcLogin(claims);
+        return new API<>(token, APIServerMessage.요청_성공);
     }
 
     @PostMapping("/signup")
-    public String googleJoin(@RequestBody Oauth2JoinDto dto) {
+    public API<String> googleJoin(@RequestBody Oauth2JoinDto dto) {
         Claims claims = decodeToken(dto.getToken());
+        JoinUserOIDCDto oidcDto = new JoinUserOIDCDto(claims, dto.getUserType(), SsoType.GOOGLE);
+        APIMessage apiMessage = oidcService.oidcJoin(oidcDto);
 
-        return oidcService.oidcJoin(new JoinUserOIDCDto(claims, dto.getUserType(), SsoType.GOOGLE));
+        return new API<>(apiMessage);
     }
 
     private Claims decodeToken(String token) {

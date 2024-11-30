@@ -1,6 +1,9 @@
 package eumsun.backend.controller.oauthController;
 
 import eumsun.backend.domain.SsoType;
+import eumsun.backend.dto.api.API;
+import eumsun.backend.dto.api.APIMessage;
+import eumsun.backend.dto.api.APIServerMessage;
 import eumsun.backend.dto.toService.DecodeOpenId;
 import eumsun.backend.dto.request.Oauth2JoinDto;
 import eumsun.backend.dto.response.TokenDto;
@@ -28,17 +31,20 @@ public class KakaoController {
     private String kakaoAud;
 
     @PostMapping("/login")
-    public TokenDto kakaoLogin(@RequestBody String kakaoJson) {
+    public API<TokenDto> kakaoLogin(@RequestBody String kakaoJson) {
         Claims claims = decodeToken(kakaoJson);
+        TokenDto token = oidcService.oidcLogin(claims);
 
-        return oidcService.oidcLogin(claims);
+        return new API<>(token, APIServerMessage.요청_성공);
     }
 
     @PostMapping("/signup")
-    public String kakaoJoin(@RequestBody Oauth2JoinDto dto) {
+    public API<String> kakaoJoin(@RequestBody Oauth2JoinDto dto) {
         Claims claims = decodeToken(dto.getToken());
+        JoinUserOIDCDto oidcDto = new JoinUserOIDCDto(claims, dto.getUserType(), SsoType.KAKAO);
+        APIMessage apiMessage = oidcService.oidcJoin(oidcDto);
 
-        return oidcService.oidcJoin(new JoinUserOIDCDto(claims, dto.getUserType(), SsoType.KAKAO));
+        return new API<>(apiMessage);
     }
 
     private Claims decodeToken(String token) {
