@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  springbootserver:
+    container_name: spring-boot-server
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb:27017/mongodb?authSource=admin
+    depends_on:
+      - mongodb
+
+  mongodb:
+    container_name: mongodb
+    user: "999:999"
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+    volumes:
+      - ./data:/data/db
+    restart: always
+
+volumes:
+  mongodb:
