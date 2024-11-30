@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eumsun.backend.domain.SsoType;
 import eumsun.backend.domain.UserData;
 import eumsun.backend.domain.UserType;
+import eumsun.backend.dto.api.APIMessage;
+import eumsun.backend.dto.api.APIServerMessage;
 import eumsun.backend.dto.toService.NaverOauthDto;
 import eumsun.backend.dto.request.NaverJoinDto;
 import eumsun.backend.repository.repositoryImpl.UserDataRepositoryValid;
@@ -32,7 +34,7 @@ public class NaverService {
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public String naverJoin(NaverJoinDto dto) {
+    public APIMessage naverJoin(NaverJoinDto dto) {
         NaverOauthDto getResponse = getBody(dto.getAccessToken());
         UserData newUser = UserData.builder()
                 .email(getResponse.userEmail())
@@ -43,7 +45,7 @@ public class NaverService {
                 .build();
 
         userDataRepository.saveNewUserData(newUser);
-        return "회원가입이 완료되었습니다.";
+        return APIServerMessage.회원가입_성공;
     }
 
     public UserData naverLogin(String accessToken) {

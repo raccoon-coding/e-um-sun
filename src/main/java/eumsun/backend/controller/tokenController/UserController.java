@@ -31,6 +31,7 @@ public class UserController {
     public API<GetUserDto> getUserData() {
         UserData user = UserDataUtil.getUserData();
         GetUserDto result = userService.getUserData(new GetUserDataDto(user));
+
         return new API<>(result, APIServerMessage.요청_성공);
     }
 
@@ -39,6 +40,7 @@ public class UserController {
         UserData user = UserDataUtil.getUserData();
         ChangePasswordDto passwordDto = new ChangePasswordDto(user, dto.getOldPassword(), dto.getNewPassword());
         APIMessage apiMessage = userService.changeUserPassword(passwordDto);
+
         return new API<>(apiMessage);
     }
 
@@ -46,6 +48,7 @@ public class UserController {
     public API<String> deleteUserData(@Validated @RequestBody UserDeleteDto dto) {
         UserData user = UserDataUtil.getUserData();
         APIMessage apiMessage = userService.deleteUser(new DeleteUserDto(user, dto.getUserEmail()));
+
         return new API<>(apiMessage);
     }
 }

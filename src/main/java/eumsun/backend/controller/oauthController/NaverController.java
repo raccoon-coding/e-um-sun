@@ -2,6 +2,9 @@ package eumsun.backend.controller.oauthController;
 
 import eumsun.backend.config.jwt.JwtCreator;
 import eumsun.backend.domain.UserData;
+import eumsun.backend.dto.api.API;
+import eumsun.backend.dto.api.APIMessage;
+import eumsun.backend.dto.api.APIServerMessage;
 import eumsun.backend.dto.request.NaverJoinDto;
 import eumsun.backend.dto.response.TokenDto;
 import eumsun.backend.dto.toService.CreateTokenDto;
@@ -19,17 +22,19 @@ public class NaverController {
     private final NaverService naverService;
     private final JwtCreator jwtProvider;
 
-    // 토큰을 헤더에서 받아올까??? 나중에 결정하기.
     @PostMapping("/login")
-    public TokenDto naverLogin(@RequestBody String naverAccessToken) {
+    public API<TokenDto> naverLogin(@RequestBody String naverAccessToken) {
         UserData member = naverService.naverLogin(naverAccessToken);
         CreateTokenDto tokenDto = new CreateTokenDto(member.getId(), 0);
+        TokenDto token = jwtProvider.createToken(tokenDto);
 
-        return jwtProvider.createToken(tokenDto);
+        return new API<>(token, APIServerMessage.로그인_성공);
     }
 
     @PostMapping("/signup")
-    public String naverJoin(@RequestBody NaverJoinDto naverJoinDto) {
-        return naverService.naverJoin(naverJoinDto);
+    public API<String> naverJoin(@RequestBody NaverJoinDto naverJoinDto) {
+        APIMessage apiMessage = naverService.naverJoin(naverJoinDto);
+
+        return new API<>(apiMessage);
     }
 }

@@ -26,18 +26,21 @@ public class NotTokenController {
     @PostMapping("/join")
     public API<String> join(@Validated @RequestBody UserJoinDto dto) {
         APIMessage apiMessage = userService.joinNewUserFromDefault(dto);
+
         return new API<>(apiMessage);
     }
 
     @PostMapping("/login")
     public API<TokenDto> login(@Validated @RequestBody UserLoginDto dto) {
         TokenDto token = userService.login(dto);
+
         return new API<>(token, APIServerMessage.로그인_성공);
     }
 
     @GetMapping("/refresh")
     public API<TokenDto> refresh(ServletRequest request) {
         TokenDto token = userService.refreshToken((HttpServletRequest) request);
+
         return new API<>(token, APIServerMessage.토큰_재발급_성공);
     }
 }

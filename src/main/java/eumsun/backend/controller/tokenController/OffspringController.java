@@ -1,7 +1,7 @@
 package eumsun.backend.controller.tokenController;
 
-import eumsun.backend.domain.UserData;
 import eumsun.backend.dto.api.API;
+import eumsun.backend.dto.api.APIMessage;
 import eumsun.backend.dto.request.controller.UserRandomStringDto;
 import eumsun.backend.dto.toService.ConnectUserDto;
 import eumsun.backend.service.OffspringService;
@@ -21,7 +21,9 @@ public class OffspringController {
 
     @PatchMapping("/connection")
     public API<String> connectParent(@Validated @RequestBody UserRandomStringDto dto) {
-        UserData offspring = UserDataUtil.getUserData();
-        return offspringService.connectParent(new ConnectUserDto(offspring, dto.getRandomString()));
+        ConnectUserDto connectUserDto = new ConnectUserDto(UserDataUtil.getUserData(), dto.getRandomString());
+        APIMessage apiMessage = offspringService.connectParent(connectUserDto);
+
+        return new API<>(apiMessage);
     }
 }

@@ -30,7 +30,7 @@ public class ParentService {
     private final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     @Transactional
-    public API<String> connectOffspring(CreateConnectDto dto) {
+    public String connectOffspring(CreateConnectDto dto) {
         UserData parent = dto.parent();
         UserData offspring = userDataRepository.findUserByEmail(dto.offspringEmail());
 
@@ -38,15 +38,15 @@ public class ParentService {
         validConnectState(parent, offspring);
         Connection connection = connecting(offspring, parent);
 
-        return new API<>(connection.getRandomMixStr(), APIServerMessage.요청_성공);
+        return connection.getRandomMixStr();
     }
 
-    public API<String> getString(GetRandomStringDto dto) {
+    public String getRandomString(GetRandomStringDto dto) {
         UserData parent = dto.parent();
         Connection parentConnection = parent.getConnection();
 
         validConnect(parentConnection);
-        return new API<>(parentConnection.getRandomMixStr(), APIServerMessage.요청_성공);
+        return parentConnection.getRandomMixStr();
     }
 
     private void validUserType(UserData offspring) {

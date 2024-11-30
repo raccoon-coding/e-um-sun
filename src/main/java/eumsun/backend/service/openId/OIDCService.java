@@ -3,6 +3,8 @@ package eumsun.backend.service.openId;
 import eumsun.backend.config.jwt.JwtCreator;
 import eumsun.backend.domain.UserData;
 import eumsun.backend.domain.UserType;
+import eumsun.backend.dto.api.APIMessage;
+import eumsun.backend.dto.api.APIServerMessage;
 import eumsun.backend.dto.response.TokenDto;
 import eumsun.backend.dto.toService.CreateTokenDto;
 import eumsun.backend.dto.toService.JoinUserOIDCDto;
@@ -23,7 +25,7 @@ public class OIDCService {
     private final JwtCreator jwtProvider;
 
     @Transactional
-    public String oidcJoin(JoinUserOIDCDto dto) {
+    public APIMessage oidcJoin(JoinUserOIDCDto dto) {
         Claims claims = dto.claims();
         UserData newUser = UserData.builder()
                 .email(claims.get(CLAIM_EMAIL, String.class))
@@ -34,7 +36,7 @@ public class OIDCService {
                 .build();
 
         userDataRepository.saveNewUserData(newUser);
-        return "회원가입이 완료되었습니다.";
+        return APIServerMessage.회원가입_성공;
     }
 
     public TokenDto oidcLogin(Claims claims) {

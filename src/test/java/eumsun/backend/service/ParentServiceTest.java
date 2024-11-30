@@ -55,10 +55,10 @@ class ParentServiceTest {
     void 연결_확인() {
         UserData parent = userDataRepository.findUserByEmail(parentEmail);
 
-        API<String> api = parentService.connectOffspring(new CreateConnectDto(parent, offspringEmail));
+        String randomStr = parentService.connectOffspring(new CreateConnectDto(parent, offspringEmail));
         UserData expect = userDataRepository.findUserByEmail(parentEmail);
 
-        assertThat(api.getData()).isEqualTo(expect.getConnection().getRandomMixStr());
+        assertThat(randomStr).isEqualTo(expect.getConnection().getRandomMixStr());
     }
 
     @Test
@@ -86,7 +86,7 @@ class ParentServiceTest {
         UserData parent = userDataRepository.findUserByEmail(parentEmail);
 
         assertThatThrownBy(() -> {
-            parentService.getString(new GetRandomStringDto(parent));
+            parentService.getRandomString(new GetRandomStringDto(parent));
         }).isInstanceOf(ParentNotConnectedException.class);
 
     }
@@ -94,12 +94,12 @@ class ParentServiceTest {
     @Test
     void 랜덤_문자열_받기() {
         UserData parent = userDataRepository.findUserByEmail(parentEmail);
-        API<String> api = parentService.connectOffspring(new CreateConnectDto(parent, offspringEmail));
+        String randomStr = parentService.connectOffspring(new CreateConnectDto(parent, offspringEmail));
         UserData result = userDataRepository.findUserByEmail(parentEmail);
 
-        API<String> expect = parentService.getString(new GetRandomStringDto(result));
+        String expect = parentService.getRandomString(new GetRandomStringDto(result));
 
-        assertThat(api.getData()).isEqualTo(expect.getData());
+        assertThat(randomStr).isEqualTo(expect);
     }
 
     UserData offspring() {
