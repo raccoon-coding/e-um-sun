@@ -45,7 +45,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/join", "/login", "/refresh", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/user/**").hasAnyAuthority(offspring, parent, develop)

@@ -25,7 +25,7 @@ public class JwtProviderImpl implements JwtProvider {
     private SecretKey key;
 
     @PostConstruct
-    private void initializeKey(String secretKey) {
+    private void initializeKey() {
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
     }
 
