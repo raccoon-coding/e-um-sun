@@ -13,8 +13,8 @@ import static eumsun.backend.config.util.JwtUtil.HEADER;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "00 프로젝트 API 명세서",
-                description = "00 프로젝트에 사용되는 API 명세서",
+                title = "이음선 프로젝트 API 명세서",
+                description = "이음선 프로젝트에 사용되는 API 명세서",
                 version = "v1"
         )
 )
